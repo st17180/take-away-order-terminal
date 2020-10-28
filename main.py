@@ -18,7 +18,7 @@ def take_name(): # asks user for name. returns name if its valid
         name = input("What is your name? : ")
         if name == '':
             print("please enter a valid input")
-        elif all(x.isalpha() or x,isspace() for x in name):
+        elif all(x.isalpha() or x.isspace() for x in name):
             x = False
             return name
         else:
@@ -41,7 +41,10 @@ def take_address(): # asks user for address, returns address if its valid
     while i == True:
         try:
             street = str(input("Whats your street name? : "))
-            i = False
+            if street == '':
+                print("Make sure its not empty")
+            else:
+                i = False
         except ValueError:
             print("Make sure the name is entirely letters (a-z)")
     while x == True:
@@ -64,10 +67,10 @@ def calc_order():
         eprice = str(eprice)
         print(entry + "\t" + eamount + "\t" + menu[entry] + "\t\t" + eprice)
         
-        v = 0
-        for key in pending_order:
-            v += pending_order[key]["price"]
-            print("Total price : " + str(v))
+    v = 0
+    for key in pending_order:
+        v += pending_order[key]["price"]
+        print("Total price : " + str(v))
 
 while True:
     seperator(53)
@@ -84,13 +87,21 @@ while True:
         pending = True
 
         while pending == True:
-            selected_item = str(input("Select an item with its name or f to finish : "))
+            selected_item = str(input("Select an item with its name or f to finish / m to print menu : "))
             if selected_item == "f":
                 calc_order()
-                if ask_yn("Would you like to edit your order?") == False:
+                a = input("would you like cancell, edit or finish your order? : ")
+                if a == 'finish':
                     pending = False
-                else:
+                elif a == 'cancell':
+                    pending_order = {}
+                    pending = False
+                elif a == 'edit':
                     pending = True
+                else:
+                    print("make sure you entered 'finish', 'cancell' or 'edit'")
+            elif selected_item == "m":
+                display_menu()
             elif selected_item in menu:
                 a = input("Add remove or change : ")
                 if a == "add" and not selected_item in pending_order:
@@ -115,7 +126,7 @@ while True:
                     print(pending_order)
                 elif a == "change" and selected_item in pending_order:
                     try:
-                        amount = input("how much would you like to order instead: ") # make sure amount is 5 or less and only 0-9 and not empty
+                        amount = int(input("how much would you like to order instead: ")) # make sure amount is 5 or less and only 0-9 and not empty
                         if amount  > 5 or amount < 1:
                             print("you can only have from 1 to 5")
                         else:
@@ -125,6 +136,7 @@ while True:
                             famount = float(amount)
                             change = fprice * famount
                             pending_order[item]["price"] = change
+                            pending_order[item]["amount"] = amount
                             print(pending_order)
                     except ValueError:
                         print("Make sure input is only 0-9")
@@ -136,4 +148,4 @@ while True:
         print("Your final order is")
         calc_order()
     else:
-        print("idek")
+        print("Good bye!")

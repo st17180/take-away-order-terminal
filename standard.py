@@ -13,8 +13,4 @@ def ask_yn(question):
 
 # Prints a visual seperator the length of {amount}
 def seperator(amount):
-    print("{", end = '')
-    while amount > 0:
-        print("=", end = '')
-        amount = amount - 1
-    print("}")
+    print("{" + "="*amount +"}")
