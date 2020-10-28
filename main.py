@@ -1,10 +1,13 @@
+# imports menu and extra functions from menu.py and standard.py
 from menus import menu
 from standard import ask_yn, seperator
 """
 Take away order cli.
 """
-version = " beta : 0.2"
+version = " beta : 0.3"
 
+
+# Displays menu dictionary in a styled way
 def display_menu():
     seperator(28)
     print(" Name\t\tPrice")
@@ -12,7 +15,9 @@ def display_menu():
         print(" " + entry + "\t\t" + menu[entry])
     seperator(28)
 
-def take_name(): # asks user for name. returns name if its valid
+
+# handles taking users name and out of bound entrys
+def take_name():
     x = True
     while x:
         name = input("What is your name? : ")
@@ -24,7 +29,9 @@ def take_name(): # asks user for name. returns name if its valid
         else:
             print("Make sure input is valid")
 
-def take_phone(): # asks user for phone number, returns phone number if its valid
+
+# handles taking users phone number and out of bound entrys
+def take_phone():
     while True:
         try:
             nb = int(input("what if your phone number? (0-9) : "))
@@ -35,10 +42,12 @@ def take_phone(): # asks user for phone number, returns phone number if its vali
         except ValueError:
             print("Make sure theres only numbers (0-9) and input is not empty")
 
-def take_address(): # asks user for address, returns address if its valid
+
+# handles taking users address street/place and out of bound entrys
+def take_address():
     i = True
     x = True
-    while i == True:
+    while i is True:
         try:
             street = str(input("Whats your street name? : "))
             if street == '':
@@ -47,7 +56,7 @@ def take_address(): # asks user for address, returns address if its valid
                 i = False
         except ValueError:
             print("Make sure the name is entirely letters (a-z)")
-    while x == True:
+    while x is True:
         try:
             place = int(input("Whats your place on the street? : "))
             x = False
@@ -56,8 +65,13 @@ def take_address(): # asks user for address, returns address if its valid
 
     return street + " " + str(place)
 
+
+# calculates and displays the users current order if a styled way
 def calc_order():
-    print("name : " + name + " | Phone number : " + str(pnb) + " | address : " + address)
+    user_info = 'Name : ' + name +\
+                ' | Phone number : ' + str(pnb) +\
+                ' | address : ' + address
+    print(user_info)
     print("name\tamount\tprice per item\ttotal amount price")
     for entry in pending_order:
         eamount = pending_order[entry]["amount"]
@@ -66,7 +80,7 @@ def calc_order():
         eamount = str(eamount)
         eprice = str(eprice)
         print(entry + "\t" + eamount + "\t" + menu[entry] + "\t\t" + eprice)
-        
+
     v = 0
     for key in pending_order:
         v += pending_order[key]["price"]
@@ -76,21 +90,22 @@ while True:
     seperator(53)
     print("Welcome to the Take away order terminal version : " + version)
     seperator(53)
-    if ask_yn("Would you like to place an order?") == True:
+    if ask_yn("Would you like to place an order?") is True:
         name = take_name()
         pnb = take_phone()
         address = take_address()
 
         display_menu()
-        info = {"name" : name, "Phone number" : pnb, "address" : address}
+        info = {"name": name, "Phone number": pnb, "address": address}
         pending_order = {}
         pending = True
 
-        while pending == True:
-            selected_item = str(input("Select an item with its name or f to finish / m to print menu : "))
+        while pending is True:
+            selected_item = str(input("select an item by name or\
+                f to finish / m to show menu  : "))
             if selected_item == "f":
                 calc_order()
-                a = input("would you like cancell, edit or finish your order? : ")
+                a = input("cancel edit or finish the order? : ")
                 if a == 'finish':
                     pending = False
                 elif a == 'cancell':
@@ -99,14 +114,14 @@ while True:
                 elif a == 'edit':
                     pending = True
                 else:
-                    print("make sure you entered 'finish', 'cancell' or 'edit'")
+                    print("make sure you entered finish cancel or edit")
             elif selected_item == "m":
                 display_menu()
             elif selected_item in menu:
                 a = input("Add remove or change : ")
-                if a == "add" and not selected_item in pending_order:
+                if a == "add" and selected_item not in pending_order:
                     try:
-                        amount = int(input("How much would you like to add : "))
+                        amount = int(input("amount to add : "))
                         if amount > 5 or amount < 1:
                             print("you can only have from 1 to 5")
                         else:
@@ -115,7 +130,7 @@ while True:
                             ffprice = float(price)
                             ffamount = float(amount)
                             fprice = ffprice * ffamount
-                            aaa = {"amount" : amount, "price" : fprice}
+                            aaa = {"amount": amount, "price": fprice}
                             pending_order[item] = aaa
                             print(pending_order)
                     except ValueError:
@@ -126,8 +141,8 @@ while True:
                     print(pending_order)
                 elif a == "change" and selected_item in pending_order:
                     try:
-                        amount = int(input("how much would you like to order instead: ")) # make sure amount is 5 or less and only 0-9 and not empty
-                        if amount  > 5 or amount < 1:
+                        amount = int(input("amount to order : "))
+                        if amount > 5 or amount < 1:
                             print("you can only have from 1 to 5")
                         else:
                             item = selected_item
@@ -141,7 +156,9 @@ while True:
                     except ValueError:
                         print("Make sure input is only 0-9")
                 else:
-                    print("Make sure the selected item in in the menu or if removing or chaning that the item is in your order before changing or removing. ")
+                    print("Make sure the selected item in in the menu \
+                    or if removing or chaning that the item is in your \
+                    order before changing or removing. ")
             else:
                 print('Make sure the name is the same as the menu. or "f" ')
         seperator(53)
