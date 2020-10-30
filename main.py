@@ -1,10 +1,42 @@
-# imports menu and extra functions from menu.py and standard.py
-from menus import menu
-from standard import ask_yn, seperator
 """
 Take away order cli.
+Version 0.4
 """
-version = " beta : 0.3"
+
+
+menu = {
+    "Fish": "2.40",
+    "Chips": "2.40",
+    "HotDog": "2.10",
+    "Spring": "2.60",
+    "Scallop": "1.60",
+    "Donut": "2.00",
+    "Egg": "2.30",
+    "Burger": "4.10",
+    "Sausage": "2.20",
+    "Wedges": "4.00",
+    "Chicken": "3.10",
+    "Mince": "3.10"
+}
+
+
+# asks yes no. returns relating True/False
+def ask_yn(question):
+    a1 = False
+    while a1 is False:
+        a = input(question + "(y/n) : ")
+        if a == "y":
+            return True
+        elif a == "n":
+            return False
+        else:
+            print("make sure to awnser with only y or n")
+            a1 = False
+
+
+# Prints a visual seperator the length of {amount}
+def seperator(amount):
+    print("{" + "="*amount + "}")
 
 
 # Displays menu dictionary in a styled way
@@ -86,44 +118,56 @@ def calc_order():
         v += pending_order[key]["price"]
         print("Total price : " + str(v))
 
+# main loop. repeats upon order finish
 while True:
+    # greets the user
     seperator(53)
-    print("Welcome to the Take away order terminal version : " + version)
+    print("Welcome to the Take away order terminal version")
     seperator(53)
+    # ask user to start an order
     if ask_yn("Would you like to place an order?") is True:
         name = take_name()
         pnb = take_phone()
         address = take_address()
-
         display_menu()
         info = {"name": name, "Phone number": pnb, "address": address}
         pending_order = {}
         pending = True
-
+        # menu selection loop
         while pending is True:
-            selected_item = str(input("select an item by name or\
-                f to finish / m to show menu  : "))
+            selected_item = str(input("select an item by name\
+                \n or f to finish  m to show menu  : "))
+            # final selection loop
             if selected_item == "f":
                 calc_order()
                 a = input("cancel edit or finish the order? : ")
+                # ends order editing
                 if a == 'finish':
                     pending = False
+                # clears pending order and resets
                 elif a == 'cancell':
                     pending_order = {}
                     pending = False
+                # returns to Editing
                 elif a == 'edit':
                     pending = True
+                # catches invalid input
                 else:
                     print("make sure you entered finish cancel or edit")
+            # displays menu 
             elif selected_item == "m":
                 display_menu()
+            # item selection and edit loop
             elif selected_item in menu:
                 a = input("Add remove or change : ")
+                # adds selected item to the order
                 if a == "add" and selected_item not in pending_order:
                     try:
                         amount = int(input("amount to add : "))
+                        # catches invalid input
                         if amount > 5 or amount < 1:
                             print("you can only have from 1 to 5")
+                        # adds the amount of the selected item 
                         else:
                             item = selected_item
                             price = menu[selected_item]
@@ -133,17 +177,22 @@ while True:
                             aaa = {"amount": amount, "price": fprice}
                             pending_order[item] = aaa
                             print(pending_order)
+                    # catches invalid inputs
                     except ValueError:
                         print("Make sure input is only 0-9")
+                # removes selected item from the order
                 elif a == "remove" and selected_item in pending_order:
                     item = selected_item
                     del pending_order[item]
                     print(pending_order)
+                # chnages the amount of an item in the order
                 elif a == "change" and selected_item in pending_order:
                     try:
                         amount = int(input("amount to order : "))
+                        # catches invalid input
                         if amount > 5 or amount < 1:
                             print("you can only have from 1 to 5")
+                        # changes based on selection and amount
                         else:
                             item = selected_item
                             price = menu[selected_item]
@@ -153,16 +202,22 @@ while True:
                             pending_order[item]["price"] = change
                             pending_order[item]["amount"] = amount
                             print(pending_order)
+                    # catches invalid input
                     except ValueError:
                         print("Make sure input is only 0-9")
+                # catches invalid inputs
                 else:
-                    print("Make sure the selected item in in the menu \
-                    or if removing or chaning that the item is in your \
-                    order before changing or removing. ")
+                    print("Make sure the selected item in in the menu\
+                    \n or when removing that it is in the order")
+            # catches invalid inputs
             else:
                 print('Make sure the name is the same as the menu. or "f" ')
+        # displays final order and takes payment
         seperator(53)
         print("Your final order is")
         calc_order()
+        print("continue at card reader")
+        seperator(53)
+    # resets ready to take another order
     else:
         print("Good bye!")
